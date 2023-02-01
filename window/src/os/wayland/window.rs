@@ -410,6 +410,15 @@ impl WindowOps for WaylandWindow {
         });
     }
 
+    fn get_window_position(&self) -> Future<ScreenPoint> {
+        WaylandConnection::with_window_inner(self.0, move |_inner| {
+            // Wayland does not support getting window position. Potential workarounds:
+            //   1. Use window manager like GTK
+            //   2. Create window covering the all screens and use subsurfaces
+            Ok(ScreenPoint::new(0, 0))
+        })
+    }
+    
     fn get_clipboard(&self, clipboard: Clipboard) -> Future<String> {
         let mut promise = Promise::new();
         let future = promise.get_future().unwrap();
